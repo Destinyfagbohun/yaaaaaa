@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Daily Proverbs Verse</title>
+<style>
+  /* Basic Widget Styling */
+  #proverb-widget {
+    font-family: sans-serif;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 350px; /* Adjust width as needed */
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  }
+  #proverb-widget h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  #proverb-widget p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 0.95em;
+    line-height: 1.4;
+  }
+  #proverb-reference {
+    font-weight: bold;
+    color: #0056b3; /* Change color as desired */
+    display: block; /* Ensure reference is on its own line */
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div id="proverb-widget">
+  <h4>Verse for Today</h4>
+  <span id="proverb-reference">Loading...</span>
+  <p id="proverb-text"></p>
+</div>
+
+<script>
+  // Array containing the 30 Proverbs verses
+  const proverbsVerses = [
+    { reference: "Proverbs 3:5-6", text: "Trust in the LORD with all your heart; do not depend on your own understanding. Seek his will in all you do, and he will show you which path to take." },
+    { reference: "Proverbs 22:6", text: "Direct your children onto the right path, and when they are older, they will not leave it." },
+    { reference: "Proverbs 1:7", text: "Fear of the LORD is the foundation of true knowledge, but fools despise wisdom and discipline." },
+    { reference: "Proverbs 4:23", text: "Guard your heart above all else, for it determines the course of your life." },
+    { reference: "Proverbs 16:3", text: "Commit your actions to the LORD, and your plans will succeed." },
+    { reference: "Proverbs 3:7", text: "Don’t be impressed with your own wisdom. Instead, fear the LORD and turn away from evil." },
+    { reference: "Proverbs 3:9-10", text: "Honor the LORD with your wealth and with the best part of everything you produce. Then he will fill your barns with grain, and your vats will overflow with good wine." },
+    { reference: "Proverbs 3:11-12", text: "My child, don’t reject the LORD’s discipline, and don’t be upset when he corrects you. For the LORD corrects those he loves, just as a father corrects a child in whom he delights." },
+    { reference: "Proverbs 3:13-15", text: "Joyful is the person who finds wisdom, the one who gains understanding. For wisdom is more profitable than silver, and her wages are better than gold. Wisdom is more precious than rubies; nothing you desire can compare with her." },
+    { reference: "Proverbs 3:27", text: "Do not withhold good from those who deserve it when it’s in your power to help them." },
+    { reference: "Proverbs 16:9", text: "We can make our plans, but the LORD determines our steps." },
+    { reference: "Proverbs 27:19", text: "As a face is reflected in water, so the heart reflects the real person." },
+    { reference: "Proverbs 31:10", text: "Who can find a virtuous and capable wife? She is more precious than rubies." },
+    { reference: "Proverbs 14:12", text: "There is a path before each person that seems right, but it ends in death." },
+    { reference: "Proverbs 15:1", text: "A gentle answer deflects anger, but harsh words make tempers flare." },
+    { reference: "Proverbs 11:25", text: "The generous will prosper; those who refresh others will themselves be refreshed." },
+    { reference: "Proverbs 17:22", text: "A cheerful heart is good medicine, but a broken spirit saps a person’s strength." },
+    { reference: "Proverbs 18:10", text: "The name of the LORD is a strong fortress; the godly run to him and are safe." },
+    { reference: "Proverbs 18:21", text: "The tongue can bring death or life; those who love to talk will reap the consequences." },
+    { reference: "Proverbs 19:21", text: "You can make many plans, but the LORD’s purpose will prevail." },
+    { reference: "Proverbs 20:1", text: "Wine produces mockers; alcohol leads to brawls. Those led astray by drink cannot be wise." },
+    { reference: "Proverbs 21:2", text: "People may be right in their own eyes, but the LORD examines their heart." },
+    { reference: "Proverbs 21:21", text: "Whoever pursues righteousness and unfailing love will find life, righteousness, and honor." },
+    { reference: "Proverbs 24:16", text: "The godly may trip seven times, but they will get up again. But one disaster is enough to overthrow the wicked." },
+    { reference: "Proverbs 25:11", text: "Timely advice is lovely, like golden apples in a silver basket." },
+    { reference: "Proverbs 27:17", text: "As iron sharpens iron, so a friend sharpens a friend." },
+    { reference: "Proverbs 28:13", text: "People who conceal their sins will not prosper, but if they confess and turn from them, they will receive mercy." },
+    { reference: "Proverbs 29:11", text: "Fools vent their anger, but the wise quietly hold it back." },
+    { reference: "Proverbs 30:5", text: "Every word of God proves true. He is a shield to all who come to him for protection." },
+    { reference: "Proverbs 31:25", text: "She is clothed with strength and dignity, and she laughs without fear of the future." }
+  ];
+
+  // Function to get the day number (0-indexed) since a fixed start date
+  function getDayOfYearIndex(startDate) {
+    const now = new Date();
+    // Set hours to 0 to compare dates only, ignoring time
+    const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const diffTime = today - start; // Difference in milliseconds
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
+    return diffDays;
+  }
+
+  // --- Main Logic ---
+  // Define a start date (e.g., Jan 1st of the current year, or specific date)
+  // Using the current date (April 24, 2025) as day 0 for the cycle start
+  const cycleStartDate = new Date(2025, 3, 24); // Month is 0-indexed (3 = April)
+
+  // Calculate which day of the 30-day cycle it is (0-29)
+  const dayIndex = getDayOfYearIndex(cycleStartDate) % 30;
+
+  // Select the verse for today based on the index
+  // Add error handling in case index is somehow out of bounds (though % 30 should prevent this)
+  const verseToShow = proverbsVerses[dayIndex] || { reference: "Error", text: "Verse not found." };
+
+  // Get the HTML elements to update
+  const referenceElement = document.getElementById('proverb-reference');
+  const textElement = document.getElementById('proverb-text');
+
+  // Update the widget content
+  referenceElement.textContent = verseToShow.reference;
+  textElement.textContent = verseToShow.text;
+
+</script>
+
+</body>
+</html>
